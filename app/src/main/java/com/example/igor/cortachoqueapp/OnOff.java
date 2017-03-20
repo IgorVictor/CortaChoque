@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.Switch;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -25,10 +28,17 @@ public class OnOff extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_off);
 
-        final Button button = (Button) findViewById(R.id.on_off_button);
+        final Button button =  (Button) findViewById(R.id.add_switch);
+
         button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
+            @Override
+            public void onClick(View v)
+            {
+                //when addYear is clicked show the new button
+                Button b = new Button(v.getContext());  // create Button
+                b.setText("New button");      //  Set the text of the Button
+                // set params and add button to layout
+                
             }
         });
     }
