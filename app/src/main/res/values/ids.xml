@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="on_of_button" type="id">on_off_button</item>
+    <item name="new_button" type="id">new_button</item>
     <item name="switch_layout" type="id">switch_layout</item>
     <item name="on_off_switch" type="id">switch_layout</item>
 </resources>
