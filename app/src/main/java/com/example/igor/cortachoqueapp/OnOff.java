@@ -3,12 +3,15 @@ package com.example.igor.cortachoqueapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Switch;
 
@@ -24,10 +27,37 @@ public class OnOff extends AppCompatActivity {
 
     private static final String FIXXED_URL = "150.165.15.10";
 
+    private static final int STOPSPLASH = 0;
+    //time in milliseconds
+    private static final long SPLASHTIME = 10000;
+
+    private ImageView splash;
+
+    //handler for splash screen
+    private Handler splashHandler = new Handler() {
+        /* (non-Javadoc)
+         * @see android.os.Handler#handleMessage(android.os.Message)
+         */
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case STOPSPLASH:
+                    //remove SplashScreen from view
+                    splash.setVisibility(View.GONE);
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_off);
+        splash = (ImageView) findViewById(R.id.splashscreen);
+        Message msg = new Message();
+        msg.what = STOPSPLASH;
+        splashHandler.sendMessageDelayed(msg, SPLASHTIME);
 
         Button button =  (Button) findViewById(R.id.add_switch);
 

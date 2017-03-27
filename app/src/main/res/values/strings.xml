@@ -2,7 +2,7 @@
     <string name="app_name">CortaChoqueApp</string>
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>
-    <string name="nome_da_tomada">Nome da Tomada</string>
+    <string name="adicionar_tomada">Adicionar Tomada</string>
     <string name="nome">Nome</string>
     <string name="endereco_da_tomada">Endereço da Tomada</string>
     <string name="criar_label">Criar</string>
