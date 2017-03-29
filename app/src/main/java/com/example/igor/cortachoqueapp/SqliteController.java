@@ -60,7 +60,7 @@ public class SqliteController extends SQLiteOpenHelper {
     public void deleteSwitch(String id) {
         Log.d(LOGCAT, "delete");
         SQLiteDatabase database = this.getWritableDatabase();
-        String deleteQuery = "DELETE FROM  Switchs where SwitchId='" + id + "'";
+        String deleteQuery = "DELETE FROM  Switchs where SwitchName='" + id + "'";
         Log.d("query", deleteQuery);
         database.execSQL(deleteQuery);
     }

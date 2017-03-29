@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import java.io.BufferedOutputStream;
@@ -68,7 +70,7 @@ public class OnOff extends AppCompatActivity {
                 createSwitch(switchMap.get("SwitchName"), switchMap.get("SwitchAddress"));
             }
         }
-        Button button =  (Button) findViewById(R.id.add_switch);
+        Button button = (Button) findViewById(R.id.add_switch);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +107,8 @@ public class OnOff extends AppCompatActivity {
                     }
                 });
             }
-            });
-            }
+        });
+    }
 
     private void saveSwitch(String switchName, String switchAddress) {
         HashMap<String, String> switchMap = new HashMap<String, String>();
@@ -115,34 +117,86 @@ public class OnOff extends AppCompatActivity {
         controller.insertSwitch(switchMap);
     }
 
-    public void createSwitch(String nome, String endereco) {
-                final ViewGroup linearLayout = (ViewGroup) findViewById(R.id.switch_layout);
-                final OnOffSwitch bt = new OnOffSwitch(OnOff.this, endereco);
-                bt.setText(nome);
-                bt.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-                        LayoutParams.WRAP_CONTENT));
-                linearLayout.addView(bt);
-            }
+    public void createSwitch(final String nome, String endereco) {
+        final ViewGroup linearLayout = (ViewGroup) findViewById(R.id.switch_layout);
+        final OnOffSwitch bt = new OnOffSwitch(OnOff.this, endereco);
+        bt.setText(nome);
+        bt.setTextSize(18);
+        bt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT));
 
-            public void sendMessage() throws IOException {
-                URL url = new URL(FIXXED_URL);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    urlConnection.setDoOutput(true);
-                    urlConnection.setChunkedStreamingMode(0);
-
-                    OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-                    writeStream(out);
-
-                } finally {
-                    urlConnection.disconnect();
-
+        bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    try {
+                        sendOnMessage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        sendOffMessage();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
-            public void writeStream(OutputStream out) throws IOException {
-                String message = "new message";
-                out.write(message.getBytes());
+        });
+        final Button remS = new Button(OnOff.this);
+        remS.setText("X");
+        remS.setTextSize(16);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_RIGHT, bt.getId());
+        remS.setLayoutParams(params);
+        remS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                linearLayout.removeView(bt);
+                linearLayout.removeView(remS);
+                controller.deleteSwitch(nome);
             }
 
+        });
+
+        linearLayout.addView(bt);
+        linearLayout.addView(remS);
+    }
+
+    public void sendOnMessage() throws IOException {
+        URL url = new URL(FIXXED_URL);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            urlConnection.setDoOutput(true);
+            urlConnection.setChunkedStreamingMode(0);
+
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            writeStream(out);
+
+        } finally {
+            urlConnection.disconnect();
+
         }
+    }
+
+    public void sendOffMessage() throws IOException {
+        URL url = new URL(FIXXED_URL);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            urlConnection.setDoOutput(true);
+            urlConnection.setChunkedStreamingMode(0);
+
+            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+            writeStream(out);
+
+        } finally {
+            urlConnection.disconnect();
+
+        }
+    }
+
+    public void writeStream(OutputStream out) throws IOException {
+        String message = "new message";
+        out.write(message.getBytes());
+    }
+
+}
