@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -32,6 +34,8 @@ public class OnOff extends AppCompatActivity {
     private static final long SPLASHTIME = 10000;
 
     private ImageView splash;
+
+    SqliteController controller = new SqliteController(this);
 
     //handler for splash screen
     private Handler splashHandler = new Handler() {
@@ -58,7 +62,12 @@ public class OnOff extends AppCompatActivity {
         Message msg = new Message();
         msg.what = STOPSPLASH;
         splashHandler.sendMessageDelayed(msg, SPLASHTIME);
-
+        ArrayList<HashMap<String, String>> legacySwitch = controller.getAllSwitchs();
+        if (legacySwitch.size() != 0) {
+            for (HashMap<String, String> switchMap : legacySwitch) {
+                createSwitch(switchMap.get("SwitchName"), switchMap.get("SwitchAddress"));
+            }
+        }
         Button button =  (Button) findViewById(R.id.add_switch);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +100,7 @@ public class OnOff extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         createSwitch(mTomada.getText().toString(), mEndereco.getText().toString());
+                        saveSwitch(mTomada.getText().toString(), mEndereco.getText().toString());
                         dialog.dismiss();
                     }
                 });
@@ -98,7 +108,14 @@ public class OnOff extends AppCompatActivity {
             });
             }
 
-            public void createSwitch(String nome, String endereco) {
+    private void saveSwitch(String switchName, String switchAddress) {
+        HashMap<String, String> switchMap = new HashMap<String, String>();
+        switchMap.put("SwitchName", switchName);
+        switchMap.put("SwitchAddres", switchAddress);
+        controller.insertSwitch(switchMap);
+    }
+
+    public void createSwitch(String nome, String endereco) {
                 final ViewGroup linearLayout = (ViewGroup) findViewById(R.id.switch_layout);
                 final OnOffSwitch bt = new OnOffSwitch(OnOff.this, endereco);
                 bt.setText(nome);
