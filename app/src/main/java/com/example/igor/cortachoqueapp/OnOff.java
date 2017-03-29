@@ -5,14 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -119,11 +122,12 @@ public class OnOff extends AppCompatActivity {
 
     public void createSwitch(final String nome, String endereco) {
         final ViewGroup linearLayout = (ViewGroup) findViewById(R.id.switch_layout);
+        final LinearLayout relativeLayout = new LinearLayout(OnOff.this);
         final OnOffSwitch bt = new OnOffSwitch(OnOff.this, endereco);
         bt.setText(nome);
         bt.setTextSize(18);
         bt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT));
+                LayoutParams.WRAP_CONTENT, 0.9f));
 
         bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -145,21 +149,23 @@ public class OnOff extends AppCompatActivity {
         final Button remS = new Button(OnOff.this);
         remS.setText("X");
         remS.setTextSize(16);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_RIGHT, bt.getId());
+        relativeLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        relativeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        relativeLayout.setWeightSum(1);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0.1f);
         remS.setLayoutParams(params);
         remS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                linearLayout.removeView(bt);
-                linearLayout.removeView(remS);
+                linearLayout.removeView(relativeLayout);
                 controller.deleteSwitch(nome);
             }
 
         });
 
-        linearLayout.addView(bt);
-        linearLayout.addView(remS);
+        relativeLayout.addView(bt);
+        relativeLayout.addView(remS);
+        linearLayout.addView(relativeLayout);
     }
 
     public void sendOnMessage() throws IOException {
