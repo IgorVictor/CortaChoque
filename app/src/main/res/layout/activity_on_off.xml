@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     tools:context="com.example.igor.cortachoqueapp.OnOff">
 
     <ImageView
@@ -22,17 +23,19 @@
         android:layout_gravity="bottom|right"
         android:orientation="vertical"
         android:layout_marginRight="8dp"
+        android:background="@color/backgroundColor"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/add_switch"
             android:layout_width="98dp"
             android:layout_height="98dp"
             android:layout_gravity="right"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
+            android:background="@drawable/add_button"
             android:text="Button" />
     </LinearLayout>
 
@@ -43,6 +46,7 @@
         android:layout_marginTop="2dp"
         android:orientation="vertical"
         android:visibility="visible"
+        android:background="@color/backgroundColor"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
 

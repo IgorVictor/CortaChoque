@@ -3,9 +3,16 @@ package com.example.igor.cortachoqueapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -14,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -73,7 +81,7 @@ public class OnOff extends AppCompatActivity {
                 createSwitch(switchMap.get("SwitchName"), switchMap.get("SwitchAddress"));
             }
         }
-        Button button = (Button) findViewById(R.id.add_switch);
+        ImageButton button = (ImageButton) findViewById(R.id.add_switch);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +128,7 @@ public class OnOff extends AppCompatActivity {
         controller.insertSwitch(switchMap);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void createSwitch(final String nome, String endereco) {
         final ViewGroup linearLayout = (ViewGroup) findViewById(R.id.switch_layout);
         final LinearLayout relativeLayout = new LinearLayout(OnOff.this);
@@ -128,7 +137,11 @@ public class OnOff extends AppCompatActivity {
         bt.setTextSize(18);
         bt.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT, 0.9f));
-
+        Drawable drawing = ResourcesCompat.getDrawable(getResources(), R.drawable.swtich_bg, null);
+        bt.setTrackDrawable(drawing);
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Neou-Bold.ttf");
+        bt.setBackgroundResource(R.color.backgroundColor);
+        bt.setTypeface(tf);
         bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -149,11 +162,14 @@ public class OnOff extends AppCompatActivity {
         final Button remS = new Button(OnOff.this);
         remS.setText("X");
         remS.setTextSize(16);
+        remS.setTextColor(Color.rgb(175, 31, 36));
         relativeLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         relativeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        relativeLayout.setBackgroundResource(R.color.backgroundColor);
         relativeLayout.setWeightSum(1);
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0.1f);
+        LayoutParams params = new LayoutParams(40, LayoutParams.WRAP_CONTENT, 0.1f);
         remS.setLayoutParams(params);
+        remS.setBackgroundResource(R.color.backgroundColor);
         remS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
