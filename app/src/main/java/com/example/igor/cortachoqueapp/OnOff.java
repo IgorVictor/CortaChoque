@@ -1,6 +1,7 @@
 package com.example.igor.cortachoqueapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -28,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -45,7 +47,7 @@ import static android.app.PendingIntent.getActivity;
 
 public class OnOff extends AppCompatActivity {
 
-    private static final String FIXXED_URL = "http://150.165.15.10";
+    private static final String FIXXED_URL = "http://150.165.15.10/";
 
     private static final int STOPSPLASH = 0;
     //time in milliseconds
@@ -117,9 +119,13 @@ public class OnOff extends AppCompatActivity {
                 mCriarTomada.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        createSwitch(mTomada.getText().toString(), mEndereco.getText().toString());
-                        saveSwitch(mTomada.getText().toString(), mEndereco.getText().toString());
-                        dialog.dismiss();
+                        if (mTomada.getText().toString().isEmpty()) {
+                            Toast.makeText(OnOff.this, "Insira um nome para a tomada.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            createSwitch(mTomada.getText().toString(), mEndereco.getText().toString());
+                            saveSwitch(mTomada.getText().toString(), mEndereco.getText().toString());
+                            dialog.dismiss();
+                        }
                     }
                 });
             }
@@ -149,8 +155,8 @@ public class OnOff extends AppCompatActivity {
         bt.setTypeface(tf);
         bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                sendMessage(isChecked);
-/*                if (isChecked) {
+//                sendMessage(isChecked);
+                if (isChecked) {
                     try {
                         sendOnMessage();
                     } catch (IOException e) {
@@ -162,7 +168,7 @@ public class OnOff extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }*/
+                }
             }
         });
         final Button remS = new Button(OnOff.this);
