@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -29,7 +30,11 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -40,7 +45,7 @@ import static android.app.PendingIntent.getActivity;
 
 public class OnOff extends AppCompatActivity {
 
-    private static final String FIXXED_URL = "150.165.15.10";
+    private static final String FIXXED_URL = "http://150.165.15.10";
 
     private static final int STOPSPLASH = 0;
     //time in milliseconds
@@ -144,7 +149,8 @@ public class OnOff extends AppCompatActivity {
         bt.setTypeface(tf);
         bt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                sendMessage(isChecked);
+/*                if (isChecked) {
                     try {
                         sendOnMessage();
                     } catch (IOException e) {
@@ -156,7 +162,7 @@ public class OnOff extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
             }
         });
         final Button remS = new Button(OnOff.this);
@@ -221,4 +227,58 @@ public class OnOff extends AppCompatActivity {
         out.write(message.getBytes());
     }
 
+    public void sendMessage(boolean turnOn) {
+        String server = FIXXED_URL;
+        if (turnOn) {
+            server += "on";
+        }
+        else {
+            server += "off";
+        }
+
+        TaskEsp taskEsp = new TaskEsp(server);
+        taskEsp.execute();
+    }
+
+    private class TaskEsp extends AsyncTask<Void, Void, String> {
+
+        String server;
+
+        TaskEsp(String server){
+            this.server = server;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            final String p = "http://"+server;
+
+            String serverResponse = "";
+
+            //Using java.net.HttpURLConnection
+            try {
+                HttpURLConnection httpURLConnection = (HttpURLConnection)(new URL(p).openConnection());
+
+                if(httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                    InputStream inputStream = null;
+                    inputStream = httpURLConnection.getInputStream();
+                    BufferedReader bufferedReader =
+                            new BufferedReader(new InputStreamReader(inputStream));
+                    serverResponse = bufferedReader.readLine();
+
+                    inputStream.close();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                serverResponse = e.getMessage();
+            } catch (IOException e) {
+                e.printStackTrace();
+                serverResponse = e.getMessage();
+            }
+            //
+
+            return serverResponse;
+        }
+    }
 }
